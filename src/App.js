@@ -7,10 +7,29 @@ class App extends Component {
     super(props);
 
     this.state = {
+      query: "",
       results: this.getSavedData()
     };
+    this.getQuery = this.getQuery.bind(this);
+  }
 
-    this.getPokemonList();
+  getQuery(e) {
+    const userQuery = e.currentTarget.value;
+    this.setState({
+      query: userQuery
+    });
+  }
+
+  filterPokemon() {
+    const filteredResults = this.state.results.filter(item => {
+      const name = item.name;
+      if (name.toUpperCase().includes(this.state.query.toUpperCase())) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    return filteredResults;
   }
 
   saveData(newResults) {
@@ -41,12 +60,26 @@ class App extends Component {
   }
 
   render() {
+    const pokeResults = this.filterPokemon();
     return (
       <div className="app">
+        <header className="app__header">
+          <h1 className="app__title">POKEDEX</h1>
+          <div className="app__filter">
+            <div className="app__filter-item">
+              <input
+                className="app__filter-name"
+                type="text"
+                placeholder="Filter pokemons by name..."
+                onKeyUp={this.getQuery}
+              />
+            </div>
+          </div>
+        </header>
         <main className="app__main">
           <div className="app__wrapper">
             <ul className="app__list" />
-            {this.state.results.map(item => {
+            {pokeResults.map(item => {
               return (
                 <li className="app__list-item" id={item.id} key={item.id}>
                   {item.name}
