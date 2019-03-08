@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { getPokemons } from "./services/pokemonService";
-import "./App.css";
+import "./App.scss";
 
 class App extends Component {
   constructor(props) {
@@ -64,7 +64,7 @@ class App extends Component {
     return (
       <div className="app">
         <header className="app__header">
-          <h1 className="app__title">POKEDEX</h1>
+          <h1 className="app__title">Find your Pokemon :D</h1>
           <div className="app__filter">
             <div className="app__filter-item">
               <input
