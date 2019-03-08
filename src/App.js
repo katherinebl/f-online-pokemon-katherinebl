@@ -1,7 +1,6 @@
 import React, { Component } from "react";
+import { getPokemons } from "./services/pokemonService";
 import "./App.css";
-
-const ENDPOINT = "https://pokeapi.co/api/v2/pokemon/";
 
 class App extends Component {
   constructor(props) {
@@ -14,12 +13,14 @@ class App extends Component {
   }
 
   getPokemonList() {
-    fetch(ENDPOINT)
-      .then(response => response.json())
-      .then(data => {
-        console.log("hola", data);
+    getPokemons().then(data => {
+      const newResults = data.results.map((item, index) => {
+        return { ...item, id: index };
       });
-    console.log("hola2");
+      this.setState({
+        results: newResults
+      });
+    });
   }
 
   render() {
