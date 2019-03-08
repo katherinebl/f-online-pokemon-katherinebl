@@ -44,8 +44,15 @@ class App extends Component {
     return (
       <div className="app">
         <main className="app__main">
-          <div className="app__main-wrapper">
-            <ul className="app__main-list" />
+          <div className="app__wrapper">
+            <ul className="app__list" />
+            {this.state.results.map(item => {
+              return (
+                <li className="app__list-item" id={item.id} key={item.id}>
+                  {item.name}
+                </li>
+              );
+            })}
           </div>
         </main>
       </div>
