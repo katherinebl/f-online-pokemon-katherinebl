@@ -5,8 +5,9 @@ import "./App.css";
 class App extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      results: []
+      results: this.getSavedData()
     };
 
     this.getPokemonList();
@@ -20,7 +21,23 @@ class App extends Component {
       this.setState({
         results: newResults
       });
+      this.saveData(newResults);
     });
+  }
+
+  saveData(newResults) {
+    localStorage.setItem("pokeData", JSON.stringify(newResults));
+  }
+
+  getSavedData() {
+    const pokeData = localStorage.getItem("pokeData");
+
+    if (pokeData !== null) {
+      return JSON.parse("pokeData");
+    } else {
+      this.getPokemonList();
+      return [];
+    }
   }
 
   render() {
