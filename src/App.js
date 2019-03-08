@@ -13,6 +13,21 @@ class App extends Component {
     this.getPokemonList();
   }
 
+  saveData(newResults) {
+    localStorage.setItem("pokeData", JSON.stringify(newResults));
+  }
+
+  getSavedData() {
+    const pokeData = localStorage.getItem("pokeData");
+
+    if (pokeData !== null) {
+      return JSON.parse(pokeData);
+    } else {
+      this.getPokemonList();
+      return [];
+    }
+  }
+
   getPokemonList() {
     getPokemons().then(data => {
       const newResults = data.results.map((item, index) => {
@@ -23,21 +38,6 @@ class App extends Component {
       });
       this.saveData(newResults);
     });
-  }
-
-  saveData(newResults) {
-    localStorage.setItem("pokeData", JSON.stringify(newResults));
-  }
-
-  getSavedData() {
-    const pokeData = localStorage.getItem("pokeData");
-
-    if (pokeData !== null) {
-      return JSON.parse("pokeData");
-    } else {
-      this.getPokemonList();
-      return [];
-    }
   }
 
   render() {
