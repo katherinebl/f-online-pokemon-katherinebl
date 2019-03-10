@@ -8,9 +8,20 @@ class App extends Component {
 
     this.state = {
       query: "",
-      results: this.getSavedData()
+      results: [],
+      pokeList: [],
+      havePokemons: false
     };
     this.getQuery = this.getQuery.bind(this);
+    this.getPokemonList = this.getPokemonList.bind(this);
+    this.getPoke = this.getPoke.bind(this);
+    this.filterPokemon = this.filterPokemon.bind(this);
+    this.getSavedData = this.getSavedData.bind(this);
+  }
+
+  componentDidMount() {
+    this.getPokemonList();
+    console.log("se ha montado");
   }
 
   getQuery(e) {
@@ -32,31 +43,64 @@ class App extends Component {
     return filteredResults;
   }
 
-  saveData(newResults) {
-    localStorage.setItem("pokeData", JSON.stringify(newResults));
+  saveData(pokeId, pokeList) {
+    localStorage.setItem(pokeList, JSON.stringify(pokeId));
   }
 
   getSavedData() {
     const pokeData = localStorage.getItem("pokeData");
-
     if (pokeData !== null) {
-      return JSON.parse(pokeData);
+      const savedPokemon = JSON.parse(pokeData);
+      this.setState({
+        pokeList: savedPokemon,
+        havePokemons: true
+      });
     } else {
       this.getPokemonList();
-      return [];
     }
   }
 
   getPokemonList() {
-    getPokemons().then(data => {
-      const newResults = data.results.map((item, index) => {
-        return { ...item, id: index };
+    let pokemonUrl = [];
+    getPokemons()
+      .then(data => {
+        data.results.map(item => {
+          const getUrl = fetch(item.url).then(response => response.json());
+          getUrl.then(data => {
+            pokemonUrl.push(data);
+            this.getPoke(pokemonUrl);
+          });
+        });
+      })
+      .catch(error => alert(`An error has ocurred: ${error}`));
+  }
+
+  getPoke(data) {
+    let pokemonData = [];
+
+    data.map(pokeData => {
+      let types = [];
+      pokeData.types.map(pokeTypes => {
+        return types.push(pokeTypes.type.name);
       });
+
+      let pokemonJson = {
+        id: pokeData.id,
+        name: pokeData.name,
+        type: pokeData.types,
+        image: pokeData.sprites.front_default
+      };
+
+      pokemonData.push(pokemonJson);
+
       this.setState({
-        results: newResults
+        pokeList: pokemonData.sort((a, b) => a.id - b.id),
+        havePokemons: true
       });
-      this.saveData(newResults);
+      return pokemonData;
     });
+
+    this.saveData(this.state.pokeList, "pokeList");
   }
 
   render() {
@@ -82,7 +126,7 @@ class App extends Component {
             {pokeResults.map(item => {
               return (
                 <li className="app__list-item" id={item.id} key={item.id}>
-                  {item.name}
+                  {item.name} {item.id} {item.sprites}
                 </li>
               );
             })}
