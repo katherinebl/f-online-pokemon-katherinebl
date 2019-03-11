@@ -3,11 +3,11 @@ import PokeDetail from "./PokeDetail";
 
 class PokeList extends Component {
   render() {
-    const { filteredPokemons } = this.props;
+    const { filteredPokemon } = this.props;
 
     return (
       <ul className="app__list">
-        {filteredPokemons.map((item, index) => {
+        {filteredPokemon.map((item, index) => {
           return (
             <li className="app__list-item" key={index}>
               <PokeDetail item={item} />
