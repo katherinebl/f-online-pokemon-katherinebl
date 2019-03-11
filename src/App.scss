@@ -1,18 +1,149 @@
+* {
+  margin: 0;
+}
+
+//App
 .app {
-  margin: 0em;
-  padding: 1em;
+  min-height: 100vh;
+  background-color: #ffe62c;
   font-family: "Didact Gothic", sans-serif;
   font-size: 1em;
   text-align: center;
-  background-color: #ffe62c;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
+//Header
 .app__filter-name {
   width: 30%;
   border: 2px solid black;
   background-color: #5df5cf;
 }
 
+.triangle {
+  position: fixed;
+}
+
+.t-left {
+  left: 0;
+  border-right: 30px solid transparent;
+  border-top: 30px solid black;
+  border-left: 30px solid black;
+  border-bottom: 30px solid transparent;
+}
+
+.t-right {
+  right: 0;
+  border-right: 30px solid black;
+  border-top: 30px solid black;
+  border-left: 30px solid transparent;
+  border-bottom: 30px solid transparent;
+}
+
+.app__title {
+  padding: 5%;
+}
+
+//Main
+.app__list {
+  list-style: none;
+  padding: 50px;
+  margin: 0px 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  @media all and (min-width: 768px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}
+
 .app__list-item {
   list-style: none;
+}
+
+.pokemon__types {
+  list-style: none;
+}
+
+.pokemon__wrapper {
+  border: 2px solid black;
+  z-index: 4;
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.pokemon__wrapper-grey {
+  background-color: silver;
+  position: relative;
+  flex-grow: 2;
+  min-height: 140px;
+}
+
+.pokemon__image {
+  display: block;
+  margin: 10% 30%;
+}
+
+.pokemon__id {
+  text-align: left;
+  background-color: rgb(219, 218, 218);
+  color: rgb(187, 156, 116);
+  padding: 5px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  font-size: 12px;
+}
+
+.pokemon__wrapper-info {
+  background-color: white;
+  padding: 5px;
+  text-align: left;
+}
+
+.pokemon__name {
+  text-transform: capitalize;
+  font-size: 18px;
+  font-weight: 400;
+  margin: 5px 0;
+}
+
+.pokemon__types {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+}
+
+.pokemon__types-item {
+  border: solid 1px silver;
+  border-radius: 25%;
+  padding: 3px;
+  margin: 2px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.circle {
+  position: fixed;
+  background-color: red;
+  width: 45px;
+  height: 45px;
+}
+
+.c-left {
+  left: 0;
+  bottom: 0;
+  border-radius: 0 100% 0 0;
+}
+
+.c-right {
+  right: 0;
+  bottom: 0;
+  border-radius: 100% 0 0 0;
 }

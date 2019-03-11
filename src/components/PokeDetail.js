@@ -18,7 +18,7 @@ class PokeDetail extends Component {
           <h2 className="pokemon__name">{item.name}</h2>
           <ul className="pokemon__types">
             {item.types.map((item, index) => (
-              <li className="type" key={index}>
+              <li className="pokemon__types-item" key={index}>
                 {item.type.name}
               </li>
             ))}
