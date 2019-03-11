@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { getPokemons } from "./services/pokemonService";
+import Filter from "./components/Filter";
 import "./App.scss";
 
 class App extends Component {
@@ -7,21 +8,57 @@ class App extends Component {
     super(props);
 
     this.state = {
-      query: "",
       results: [],
-      pokeList: [],
-      havePokemons: false
+      query: ""
     };
-    this.getQuery = this.getQuery.bind(this);
+
     this.getPokemonList = this.getPokemonList.bind(this);
-    this.getPoke = this.getPoke.bind(this);
+    this.getQuery = this.getQuery.bind(this);
     this.filterPokemon = this.filterPokemon.bind(this);
     this.getSavedData = this.getSavedData.bind(this);
   }
 
   componentDidMount() {
-    this.getPokemonList();
-    console.log("se ha montado");
+    this.getSavedData();
+  }
+
+  saveData(id, results) {
+    localStorage.setItem(results, JSON.stringify(id));
+  }
+
+  getSavedData() {
+    const pokeData = localStorage.getItem("results");
+    if (pokeData !== null) {
+      const savedPokemon = JSON.parse(pokeData);
+      this.setState({
+        results: savedPokemon
+      });
+    } else {
+      this.getPokemonList();
+    }
+  }
+
+  getPokemonList() {
+    let pokemonData = [];
+
+    getPokemons().then(data => {
+      let arrayLength = data.results.length;
+      for (const item of data.results) {
+        let urlItem = item.url;
+        let urlRequested = fetch(urlItem).then(response => response.json());
+
+        urlRequested.then(datas => {
+          pokemonData.push(datas);
+          if (pokemonData.length === arrayLength) {
+            pokemonData.sort((a, b) => a.id - b.id);
+            this.setState({
+              results: pokemonData
+            });
+            this.saveData(pokemonData, "results");
+          }
+        });
+      }
+    });
   }
 
   getQuery(e) {
@@ -34,102 +71,49 @@ class App extends Component {
   filterPokemon() {
     const filteredResults = this.state.results.filter(item => {
       const name = item.name;
-      if (name.toUpperCase().includes(this.state.query.toUpperCase())) {
-        return true;
-      } else {
-        return false;
-      }
+      return name.toUpperCase().includes(this.state.query.toUpperCase());
     });
     return filteredResults;
   }
 
-  saveData(pokeId, pokeList) {
-    localStorage.setItem(pokeList, JSON.stringify(pokeId));
-  }
-
-  getSavedData() {
-    const pokeData = localStorage.getItem("pokeData");
-    if (pokeData !== null) {
-      const savedPokemon = JSON.parse(pokeData);
-      this.setState({
-        pokeList: savedPokemon,
-        havePokemons: true
-      });
-    } else {
-      this.getPokemonList();
-    }
-  }
-
-  getPokemonList() {
-    let pokemonUrl = [];
-    getPokemons()
-      .then(data => {
-        data.results.map(item => {
-          const getUrl = fetch(item.url).then(response => response.json());
-          getUrl.then(data => {
-            pokemonUrl.push(data);
-            this.getPoke(pokemonUrl);
-          });
-        });
-      })
-      .catch(error => alert(`An error has ocurred: ${error}`));
-  }
-
-  getPoke(data) {
-    let pokemonData = [];
-
-    data.map(pokeData => {
-      let types = [];
-      pokeData.types.map(pokeTypes => {
-        return types.push(pokeTypes.type.name);
-      });
-
-      let pokemonJson = {
-        id: pokeData.id,
-        name: pokeData.name,
-        type: pokeData.types,
-        image: pokeData.sprites.front_default
-      };
-
-      pokemonData.push(pokemonJson);
-
-      this.setState({
-        pokeList: pokemonData.sort((a, b) => a.id - b.id),
-        havePokemons: true
-      });
-      return pokemonData;
-    });
-
-    this.saveData(this.state.pokeList, "pokeList");
-  }
-
   render() {
-    const pokeResults = this.filterPokemon();
+    const filteredPokemons = this.filterPokemon();
     return (
       <div className="app">
         <header className="app__header">
           <h1 className="app__title">Find your Pokemon :D</h1>
-          <div className="app__filter">
-            <div className="app__filter-item">
-              <input
-                className="app__filter-name"
-                type="text"
-                placeholder="Filter pokemons by name..."
-                onKeyUp={this.getQuery}
-              />
-            </div>
-          </div>
+          <Filter getQuery={this.getQuery} />
         </header>
         <main className="app__main">
           <div className="app__wrapper">
-            <ul className="app__list" />
-            {pokeResults.map(item => {
-              return (
-                <li className="app__list-item" id={item.id} key={item.id}>
-                  {item.name} {item.id} {item.sprites}
-                </li>
-              );
-            })}
+            <ul className="app__list">
+              {filteredPokemons.map((item, index) => {
+                return (
+                  <li className="app__list-item" key={index}>
+                    <div className="item-pokemon">
+                      <div className="grey_container">
+                        <img
+                          className="img"
+                          src={item.sprites.front_default}
+                          alt={item.name}
+                        />
+                        <p className="pokemon-id">ID / {item.id}</p>
+                      </div>
+                      <div className="information">
+                        <h2 className="pokemon-name">{item.name}</h2>
+                        <ul className="pokemon-type">
+                          {item.types.map((item, index) => (
+                            <li className="type" key={index}>
+                              {item.type.name}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         </main>
       </div>
