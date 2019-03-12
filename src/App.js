@@ -13,11 +13,6 @@ class App extends Component {
       results: [],
       query: ""
     };
-
-    this.getPokemonList = this.getPokemonList.bind(this);
-    this.getQuery = this.getQuery.bind(this);
-    this.filterPokemon = this.filterPokemon.bind(this);
-    this.getSavedData = this.getSavedData.bind(this);
   }
 
   componentDidMount() {
@@ -28,7 +23,7 @@ class App extends Component {
     localStorage.setItem(results, JSON.stringify(id));
   }
 
-  getSavedData() {
+  getSavedData = () => {
     const pokeData = localStorage.getItem("results");
     if (pokeData !== null) {
       const savedPokemon = JSON.parse(pokeData);
@@ -38,9 +33,9 @@ class App extends Component {
     } else {
       this.getPokemonList();
     }
-  }
+  };
 
-  getPokemonList() {
+  getPokemonList = () => {
     let pokemonData = [];
 
     getPokemons().then(data => {
@@ -61,22 +56,22 @@ class App extends Component {
         });
       }
     });
-  }
+  };
 
-  getQuery(e) {
+  getQuery = e => {
     const userQuery = e.currentTarget.value;
     this.setState({
       query: userQuery
     });
-  }
+  };
 
-  filterPokemon() {
+  filterPokemon = () => {
     const filteredResults = this.state.results.filter(item => {
       const name = item.name;
       return name.toUpperCase().includes(this.state.query.toUpperCase());
     });
     return filteredResults;
-  }
+  };
 
   render() {
     const filteredPokemon = this.filterPokemon();
