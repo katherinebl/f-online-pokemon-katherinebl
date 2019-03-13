@@ -44,12 +44,12 @@ class App extends Component {
         let urlItem = item.url;
         let urlRequested = fetch(urlItem).then(response => response.json());
 
-        urlRequested.then(datas => {
-          pokemonData.push(datas);
+        urlRequested.then(data => {
+          pokemonData.push(data);
           if (pokemonData.length === arrayLength) {
             pokemonData.sort((a, b) => a.id - b.id);
             this.setState({
-              results: pokemonData
+              results: pokemonData //aqui ya tengo los pokemon ordenados
             });
             this.saveData(pokemonData, "results");
           }
