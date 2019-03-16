@@ -1,5 +1,7 @@
-const endpoint = "https://pokeapi.co/api/v2/pokemon/?limit=25&offset=0";
+const urlPokemon = "https://pokeapi.co/api/v2/pokemon/?limit=25&offset=0";
+const urlSpecies = "https://pokeapi.co/api/v2/pokemon-species/";
 
-const getPokemons = () => fetch(endpoint).then(response => response.json());
+const getPokemons = () => fetch(urlPokemon).then(response => response.json());
+const getSpecies = () => fetch(urlSpecies).then(response => response.json());
 
-export { getPokemons };
+export { getPokemons, getSpecies };

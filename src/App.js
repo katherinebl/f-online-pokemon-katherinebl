@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getPokemons } from "./services/pokemonService";
+import { getPokemons, getSpecies } from "./services/pokemonService";
 import Header from "./components/layout/Header";
 import Main from "./components/layout/Main";
 import Footer from "./components/layout/Footer";
@@ -11,7 +11,8 @@ class App extends Component {
 
     this.state = {
       results: [],
-      query: ""
+      query: "",
+      species: []
     };
   }
 
@@ -39,14 +40,14 @@ class App extends Component {
     let pokemonData = [];
 
     getPokemons().then(data => {
-      let arrayLength = data.results.length;
+      let pokeArray = data.results.length;
       for (const item of data.results) {
         let urlItem = item.url;
         let urlRequested = fetch(urlItem).then(response => response.json());
 
         urlRequested.then(data => {
           pokemonData.push(data);
-          if (pokemonData.length === arrayLength) {
+          if (pokemonData.length === pokeArray) {
             pokemonData.sort((a, b) => a.id - b.id);
             this.setState({
               results: pokemonData //aqui ya tengo los pokemon ordenados
@@ -56,6 +57,29 @@ class App extends Component {
         });
       }
     });
+
+    let speciesData = [];
+
+    getSpecies().then(data => {
+      let speciesArray = data.results.length;
+      for (const item of data.results) {
+        let urlItem = item.url;
+        let urlRequested = fetch(urlItem).then(response => response.json());
+
+        urlRequested.then(data => {
+          speciesData.push(data);
+          if (speciesData.length === speciesArray) {
+            speciesData.sort((a, b) => a.id - b.id);
+            this.setState({
+              species: speciesData //deberia tener las especies ordenadas
+            });
+            this.saveData(speciesData, "species");
+          }
+        });
+        console.log(speciesData);
+      }
+    });
+    console.log("funciona");
   };
 
   getQuery = e => {
